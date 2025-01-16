@@ -114,17 +114,23 @@ const ContactList = ({ userData, onEdit }) => {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      // eslint-disable-next-line react/prop-types
       {userData && userData.length > 0 ? (
         userData.map((contact) => (
           <div
             key={contact.contactId}
             className="p-4 border rounded flex justify-between items-center"
           >
-            <div>
-              <h3>{contact.name}</h3>
-              <p>{contact.email}</p>
-              <p>{contact.phone}</p>
+            <div className="relative flex items-center gap-x-4">
+              <img
+                alt=""
+                src={contact.profile}
+                className="size-10 rounded-full bg-gray-50"
+              />
+              <div className="text-sm/6">
+                <h2 className="font-semibold text-gray-900">{contact.name}</h2>
+                <p className="text-gray-600">{contact.email}</p>
+                <p className="text-gray-600">{contact.phone}</p>
+              </div>
             </div>
             <div className="flex gap-2">
               <button
