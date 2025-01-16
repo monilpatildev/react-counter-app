@@ -1,0 +1,87 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:prettier/recommended",
+    "prettier",
+    "react-app",
+    "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "import", "react-hooks", "prettier", "check-file"],
+  "rules": {
+    "check-file/folder-match-with-fex": [
+      "error",
+      {
+        "*.test.{js,jsx,ts,tsx}": "**/__tests__/",
+        "*.styled.{jsx,tsx}": "**/pages/"
+      }
+    ],
+    "check-file/filename-naming-convention": [
+      "error",
+      {
+        "src/assets/**/*.{png,svg}": "KEBAB_CASE",
+        "src/store/**/*.{js,ts}": "CAMEL_CASE",
+        "src/utils/**/*.{js,ts}": "CAMEL_CASE",
+        "src/components/**/*.{jsx,tsx,js,ts}": "PASCAL_CASE",
+        "src/context/**/*.{jsx,tsx,js,ts}": "PASCAL_CASE",
+        "src/layouts/**/*.{jsx,tsx,js,ts}": "PASCAL_CASE",
+        "src/pages/**/*.{jsx,tsx,js,ts}": "PASCAL_CASE"
+      }
+    ],
+    "check-file/folder-naming-convention": [
+      "error",
+      {
+        "src/**/": "KEBAB_CASE"
+      }
+    ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/react-in-jsx-scope": "off",
+    "prettier/prettier": ["error"],
+    "no-debugger": 1,
+    "quotes": ["error", "single"],
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
+}
