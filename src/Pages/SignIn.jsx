@@ -1,19 +1,24 @@
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 
-
 export default function SignIn() {
   const storedUserData = JSON.parse(localStorage.getItem("users")) || [];
-  
   const navigate = useNavigate();
+  const [, setCookie] = useCookies("");
 
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    
+
+    if (email === "" || password === "") {
+      toast.error("Please Enter Email and Password");
+      return;
+    }
+
     const existingUser = storedUserData.find(
       (item) => item.email === email && item.password === password
     );
@@ -22,8 +27,12 @@ export default function SignIn() {
       toast.error("Invalid email or password");
       return;
     }
-    localStorage.setItem("logged-user", JSON.stringify(existingUser));
-    navigate("/contacts");
+
+    toast.success("Sign in successfully");
+    setTimeout(() => {
+      setCookie("logged-user",existingUser.userID);
+      navigate("/contacts");
+    }, 1500);
   };
   return (
     <>
@@ -47,7 +56,6 @@ export default function SignIn() {
                   id="email"
                   name="email"
                   type="email"
-                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
@@ -70,7 +78,6 @@ export default function SignIn() {
                   id="password"
                   name="password"
                   type="password"
-                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"

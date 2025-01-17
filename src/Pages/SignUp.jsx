@@ -1,36 +1,56 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import { validateName } from "../utils/validation.js";
+import { validateUserEmail } from "../utils/validation.js";
 
 const SignUp = () => {
   const storedUserData = JSON.parse(localStorage.getItem("users")) || [];
   const navigate = useNavigate();
+  const [inputFields, setInputFields] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  function uuidv4() {
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+      (
+        +c ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
+      ).toString(16)
+    );
+  }
+
+  const handleChange = (e) => {
+    setInputFields({ ...inputFields, [e.target.name]: e.target.value });
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const existingUser = storedUserData.find((item) => item.email === email);
-    
+    const { name, email, password, confirmPassword } = inputFields;
+
+    if (!name || !email || !password || !confirmPassword) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    const existingUser = storedUserData.find((user) => user.email === email);
     if (existingUser) {
-      toast.error("Email already exists");
+      toast.error("Email already exists.");
       return;
     }
-    
+
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error("Passwords and confirm password do not match.");
       return;
     }
-    function uuidv4() {
-      return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
-        (
-          +c ^
-          (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
-        ).toString(16)
-      );
+
+    const isNameValid = validateName(name);
+    const isEmailValid = validateUserEmail(email);
+    if (!isNameValid || !isEmailValid) {
+      return;
     }
 
     const newUser = {
@@ -38,11 +58,13 @@ const SignUp = () => {
       email,
       password,
       userID: uuidv4(),
-      contacts : []
+      contacts: [],
     };
 
     const updatedUserData = [...storedUserData, newUser];
     localStorage.setItem("users", JSON.stringify(updatedUserData));
+
+    toast.success("Sign up successfully!");
     navigate("/");
   };
 
@@ -69,10 +91,9 @@ const SignUp = () => {
                   id="name"
                   name="name"
                   type="name"
-                  required
                   autoComplete="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={inputFields.name}
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -89,9 +110,8 @@ const SignUp = () => {
                   id="email"
                   name="email"
                   type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={inputFields.email}
+                  onChange={handleChange}
                   autoComplete="email"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
@@ -111,9 +131,8 @@ const SignUp = () => {
                   id="password"
                   name="password"
                   type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={inputFields.password}
+                  onChange={handleChange}
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
@@ -131,11 +150,10 @@ const SignUp = () => {
               <div className="mt-2">
                 <input
                   id="confirm-password"
-                  name="confirm-password"
+                  name="confirmPassword"
                   type="confirm-password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={inputFields.confirmPassword}
+                  onChange={handleChange}
                   autoComplete="current-confirm-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
