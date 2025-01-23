@@ -1,36 +1,77 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import { useRef } from "react";
+import * as XLSX from "xlsx";
+import { toast } from "react-toastify";
 
-function ImportContact() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [data, setData] = useState(null);
+function ImportContact({ onImport }) {
+  const inputRef = useRef();
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+  const handleFileSelect = (event) => {
+    const selectedFile = event.target.files[0];
 
-  const handleImportClick = () => {
     if (selectedFile) {
+      const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        const parsedData = JSON.parse(e.target.result);
-        setData(parsedData);
-        localStorage.setItem("importedData", JSON.stringify(parsedData));
+        try {
+          let parsedData;
+
+          if (fileExtension === "json") {
+            parsedData = JSON.parse(e.target.result);
+          } else if (fileExtension === "xlsx" || fileExtension === "xls") {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            parsedData = XLSX.utils.sheet_to_json(sheet);
+          } else {
+            throw new Error("Unsupported file type");
+          }
+
+          if (onImport) {
+            onImport(parsedData);
+          }
+          toast.success("File imported successfully!");
+        } catch (error) {
+          toast.error(
+            "Invalid file format! Please upload a valid JSON or Excel file."
+          );
+        }
       };
-      reader.readAsText(selectedFile);
+
+      if (fileExtension === "json") {
+        reader.readAsText(selectedFile);
+      } else if (fileExtension === "xlsx" || fileExtension === "xls") {
+        reader.readAsArrayBuffer(selectedFile);
+      }
+
+      event.target.value = "";
+    } else {
+      toast.error("No file selected!");
     }
+  };
+
+  const handleClick = () => {
+    inputRef.current.click();
   };
 
   return (
     <div>
-      <input type="file" onChange={handleFileChange} />
       <button
-        onClick={handleImportClick}
-        className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-500"
+        onClick={handleClick}
+   
       >
         Import Data
+      <input
+        type="file"
+        accept=".json, .xlsx, .xls"
+        ref={inputRef}
+        onChange={handleFileSelect}
+        className="hidden"
+      />
       </button>
-      {/* Display imported data (if available) */}
-      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
     </div>
   );
 }

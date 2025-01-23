@@ -1,5 +1,6 @@
-  function setLocalStorage(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
+const setLocalStorage = (key, value) =>
+  localStorage.setItem(key, JSON.stringify(value));
 
-  export { setLocalStorage };
+const getLocalStorage = (key) => JSON.parse(localStorage.getItem(key)) || [];
+
+export { setLocalStorage, getLocalStorage };

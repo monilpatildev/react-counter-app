@@ -1,33 +1,34 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import * as XLSX from "xlsx";
+import { getLocalStorage } from "../utils/manageStorage";
+import { toast } from "react-toastify";
 
-const ExportContact = ({ userContact }) => {
-  const [, setData] = useState(null);
+const ExportContact = ({ userID }) => {
+    const handleExport = () => {
+      
+      const storedContacts = getLocalStorage("contacts");
+      const filteredContacts = storedContacts.filter(
+        (contact) => contact.refId === userID
+      );
 
-  const handleExport = () => {
-    if (userContact) {
-      setData(userContact);
-      downloadJSON(userContact, "myData.json");
-    }
-  };
+      if (filteredContacts.length > 0) {
+        downloadExcel(filteredContacts, "Contacts.xlsx");
+      } else {
+        toast.error("No contacts available to export.");
+      }
+    };
 
-  const downloadJSON = (data, filename) => {
-    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-
-    link.click();
-    document.body.removeChild(link);
-  };
+    const downloadExcel = (data, filename) => {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Contacts");
+      XLSX.writeFile(workbook, filename);
+    };
 
   return (
     <button
       onClick={handleExport}
-      className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-500"
+
     >
       Export Contacts
     </button>
