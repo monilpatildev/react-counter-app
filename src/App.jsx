@@ -4,15 +4,15 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import cookies from "js-cookie";
 
 function App() {
-  const isLoggedIn = useMemo(() => {
-    return !!cookies.get("logged-user");
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  useLayoutEffect(() => {
+    const isLoggedIn = !!cookies.get("logged-user");
+    setUserLoggedIn(isLoggedIn);
   }, []);
-
-  const [userLoggedIn, setUserLoggedIn] = useState(isLoggedIn);
 
   return (
     <BrowserRouter>

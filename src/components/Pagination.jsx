@@ -6,9 +6,9 @@ const Pagination = ({
   setCurrentPage,
   totalPages,
   itemsPerPage,
-  filteredContacts,
   remainingItems,
   setItemsPerPage,
+  slicedContactsData,
 }) => {
   // const [showDropdown, setShowDropdown] = useState(false);
 
@@ -43,7 +43,6 @@ const Pagination = ({
             <p className="text-sm text-gray-700">
               Showing
               <span className="font-medium m-1">
-                {}
                 {currentPage === totalPages
                   ? remainingItems !== 0
                     ? remainingItems
@@ -51,7 +50,9 @@ const Pagination = ({
                   : itemsPerPage}
               </span>
               of
-              <span className="font-medium m-1">{filteredContacts.length}</span>
+              <span className="font-medium m-1">
+                 {slicedContactsData.length}
+              </span>
               results
             </p>
             <div className=" flex gap-2 justify-center relative">

@@ -1,14 +1,31 @@
 /* eslint-disable react/prop-types */
 import { getLocalStorage } from "../utils/manageStorage";
-// import { useId} from "react"; 
-import {  useState } from "react";
+import { useState } from "react";
 import Pagination from "./Pagination";
 
 const ContactList = ({ user, onEdit, onDelete, searchedData }) => {
   const [itemsPerPage, setItemsPerPage] = useState(6);
   const [currentPage, setCurrentPage] = useState(1);
   const storedContacts = getLocalStorage("contacts");
-  // const componentId = useId();  
+  //  const [slicedContactsData, setSlicedContactsData] = useState([]);
+
+  //  const storedContacts = getLocalStorage("contacts");
+  //  useEffect(() => {
+  //    if (searchedData) {
+  //      const filteredContacts = storedContacts.filter(
+  //        (contact) =>
+  //          contact.name.toLowerCase().includes(searchedData.toLowerCase()) ||
+  //          contact.phone.includes(searchedData) ||
+  //          contact.email.includes(searchedData)
+  //      );
+  //      setSlicedContactsData(filteredContacts);
+  //    } else {
+  //      const filteredContacts = storedContacts.filter(
+  //        (contact) => contact.refId === user.userId
+  //      );
+  //      setSlicedContactsData(filteredContacts);
+  //    }
+  //  }, [searchedData, storedContacts, user.userId]);
 
   const filteredContacts = storedContacts.filter(
     (contact) => contact.refId === user.userId
@@ -82,7 +99,7 @@ const ContactList = ({ user, onEdit, onDelete, searchedData }) => {
           )}
         </div>
       </div>
-      {totalPages !== 1 || totalPages !== 0 ? (
+      {(totalPages !== 1 || totalPages !== 0) && currentData.length !== 0 ? (
         <Pagination
           currentPage={currentPage}
           setItemsPerPage={setItemsPerPage}
@@ -90,7 +107,7 @@ const ContactList = ({ user, onEdit, onDelete, searchedData }) => {
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
           remainingItems={remainingItems}
-          filteredContacts={filteredContacts}
+          slicedContactsData={slicedContactsData}
         />
       ) : (
         ""

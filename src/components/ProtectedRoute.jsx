@@ -10,7 +10,6 @@ function ProtectedRoute() {
   ) : (
     <>
       <Navigate to="/" />
-    
     </>
   );
 }

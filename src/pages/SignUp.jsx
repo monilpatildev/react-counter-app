@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import { getLocalStorage, setLocalStorage } from "../utils/manageStorage.js";
-import { uuidv4 } from "../utils/uuid.js";
+// import { uuidv4 } from "../utils/uuid.js";
 import InputField from "../components/InputField";
 
 const SignUp = () => {
@@ -15,6 +15,7 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  const userId = useId()
   const storedUserData = getLocalStorage("users") || [];
 
   const validateValues = (inputValues) => {
@@ -68,7 +69,7 @@ const SignUp = () => {
     const { name, email, password } = inputFields;
     const errors = validateValues(inputFields);
     setErrors(errors);
-    if (Object.keys(errors).length > 0) {
+    if (Object.keys(errors).length) {
       return;
     }
 
@@ -82,7 +83,7 @@ const SignUp = () => {
       name,
       email,
       password,
-      userId: uuidv4(),
+      userId: userId,
     };
 
     const updatedUserData = [...storedUserData, newUser];

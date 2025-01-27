@@ -24,8 +24,7 @@ export default function Contacts({ setIsLoggedIn }) {
   const [contacts, setContacts] = useState([]);
   const [searchedData, setSearchData] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
-  const [cookies] = useCookies(["logged-user"]);
+  const [cookies] = useCookies();
 
   useEffect(() => {
     const fetchUser = () => {
@@ -67,7 +66,6 @@ export default function Contacts({ setIsLoggedIn }) {
     const updatedContacts = storedContacts.filter(
       (contact) => contact.contactId !== contactId
     );
-
     if (confirm("Are you sure to delete the contact?")) {
       setLocalStorage("contacts", updatedContacts);
       setContacts(updatedContacts);
@@ -88,7 +86,6 @@ export default function Contacts({ setIsLoggedIn }) {
     toast.success("Logged out successfully", {
       autoClose: 800,
       onClose: () => setIsLoggedIn(false),
-
     });
     Cookies.remove("logged-user");
   };
@@ -160,7 +157,7 @@ export default function Contacts({ setIsLoggedIn }) {
         </div>
         <div className="flex justify-between relative items-center mx-10 pt-2">
           <h2 className="text-4xl font-semibold text-gray-900">
-            {user ? `Welcome, ${user.name}` : " User not found..."}
+            {user.name ? `Welcome, ${user.name}` : "Welcome"}
           </h2>
           <button
             onClick={handleLogout}

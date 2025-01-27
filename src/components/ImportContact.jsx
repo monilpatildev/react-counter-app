@@ -61,7 +61,6 @@ function ImportContact({ onImport }) {
     <div>
       <button
         onClick={handleClick}
-   
       >
         Import Data
       <input
